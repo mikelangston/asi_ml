@@ -76,25 +76,43 @@ function asi_ml_add_custom_box(){
 add_action('add_meta_boxes', 'asi_ml_add_custom_box');
 
 function asi_ml_custom_box_html($post){
+  $street_address = get_post_meta($post->ID, 'street_address', true);
+  $city = get_post_meta($post->ID, 'city', true);
+  $state = get_post_meta($post->ID, 'state', true);
+  $postal_code = get_post_meta($post->ID, 'postal_code', true);
   ?>
     <div>
       <label>Street Address</label>
-      <input type="text" value="" class="postbox" />
+      <input name="street_address" type="text" value="<?php echo $street_address ?>" class="postbox" />
     </div>
     <div>
       <label>City</label>
-      <input type="text" value="" class="postbox" />
+      <input name="city" type="text" value="<?php echo $city ?>" class="postbox" />
     </div>
     <div>
       <label>State</label>
-      <input type="text" value="" class="postbox" />
+      <input name="state" type="text" value="<?php echo $state ?>" class="postbox" />
     </div>
     <div>
       <label>Zip/Postal Code</label>
-      <input type="text" value="" class="postbox" />
+      <input name="postal_code" type="text" value="<?php echo $postal_code ?>" class="postbox" />
     </div>
   <?php
 }
+
+function asi_ml_save_postmeta($post_id){
+  $fields = ["street_address", "city", "state", "postal_code"];
+  foreach($fields as $field){
+    if(array_key_exists($field, $_POST)){
+      update_post_meta(
+        $post_id,
+        $field,
+        $_POST[$field]
+      );
+    }
+  }
+}
+add_action('save_post', 'asi_ml_save_postmeta');
 
 ///////////////////////////////////////////////////////////////////////////////
 /* All things fall off the edge of the world after this. */
